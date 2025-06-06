@@ -22,14 +22,23 @@ test.describe("LexisNexis Opt-Out Flow", () => {
     // Step 1: Initial Page and Navigation
     await optOutFormPage.navigateToForm();
     await optOutFormPage.verifyInitialPageElements();
+    await expect(page).toHaveScreenshot("01-initial-optout-form.png", {
+      fullPage: true,
+    }); // Visual check 1
 
     // Step 2: Instructions Page
     await optOutFormPage.clickNext();
     await optOutFormPage.verifyInstructionsPageElements(); // Includes the 3-second wait from original
+    await expect(page).toHaveScreenshot("02-instructions-page.png", {
+      fullPage: true,
+    }); // Visual check 2
 
     // Step 3: Opt-Out Reason Page
     await optOutFormPage.clickNext();
     await optOutFormPage.selectOptOutReason("CONSUMER");
+    await expect(page).toHaveScreenshot("03-optout-reason-selected.png", {
+      fullPage: true,
+    }); // Visual check 3 (after selection)
     await optOutFormPage.clickNext();
 
     // Step 4: Add First Person Details
@@ -43,6 +52,9 @@ test.describe("LexisNexis Opt-Out Flow", () => {
       ssnPart3: "1111",
     });
     await personInfoPage.addPerson();
+    await expect(page).toHaveScreenshot("04-first-person-added.png", {
+      fullPage: true,
+    }); // Visual check 4
 
     // Step 5: Add Second Person Details (Example of reuse)
     // Original code had a dblclick/Ctrl+A which is slightly unusual for inputting details from scratch.
@@ -57,9 +69,15 @@ test.describe("LexisNexis Opt-Out Flow", () => {
     });
     await personInfoPage.addPerson();
     await personInfoPage.verifyPersonAdded(); // Verifies 'Person to Opt Out' section and back button
+    await expect(page).toHaveScreenshot("05-second-person-added.png", {
+      fullPage: true,
+    }); // Visual check 5
 
     // Step 6: Navigate to Address Page
     await optOutFormPage.clickNext(); // Using optOutFormPage's clickNext as it's a generic "next" button
+    await expect(page).toHaveScreenshot("06-address-input-page.png", {
+      fullPage: true,
+    }); // Visual check 6
 
     // Step 7: Add Address Details
     await addressInfoPage.fillAddressDetails({
@@ -71,12 +89,21 @@ test.describe("LexisNexis Opt-Out Flow", () => {
       zipExtension: "1111",
     });
     await addressInfoPage.addAddress();
+    await expect(page).toHaveScreenshot("07-address-added.png", {
+      fullPage: true,
+    }); // Visual check 7
 
     // Step 8: Navigate to Confirmation Page
     await optOutFormPage.clickNext();
 
     // Step 9: Confirm Opt-Out
     await confirmationPage.verifyInitialState();
+
+    await expect(page).toHaveScreenshot("08-confirmation-page.png", {
+      fullPage: true,
+      mask: [page.locator("app-confirmation")],
+    });
+
     await confirmationPage.confirmOptOut();
     await confirmationPage.verifyConfirmationMessage("Confirmation"); // Or specific ID if dynamic
   });
